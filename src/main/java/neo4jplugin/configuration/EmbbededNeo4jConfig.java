@@ -9,8 +9,8 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.neo4j.config.EnableNeo4jRepositories;
-import org.springframework.data.neo4j.repository.GraphRepositoryFactoryBean;
+import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories;
+import org.springframework.data.neo4j.repository.support.GraphRepositoryFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.File;
@@ -20,7 +20,9 @@ import java.io.File;
  */
 @EnableTransactionManagement
 @Configuration
-@EnableNeo4jRepositories(basePackages = "neo4j.repositories",repositoryFactoryBeanClass = GraphRepositoryFactoryBean.class)
+//@EnableNeo4jRepositories(basePackages = "neo4j.repositories",repositoryFactoryBeanClass = GraphRepositoryFactoryBean.class)
+@EnableNeo4jRepositories(basePackages = "neo4j.repositories")
+
 @ComponentScan("neo4j")
 public class EmbbededNeo4jConfig extends Neo4JBaseConfiguration
 {

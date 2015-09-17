@@ -9,7 +9,12 @@ import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.auditing.IsNewAwareAuditingHandler;
 import org.springframework.data.neo4j.config.Neo4jConfiguration;
-import org.springframework.data.neo4j.lifecycle.AuditingEventListener;
+//import org.springframework.data.neo4j.lifecycle.AuditingEventListener;
+import org.neo4j.ogm.session.SessionFactory;
+import org.neo4j.ogm.session.Session;
+import org.springframework.context.annotation.*;
+import org.springframework.data.neo4j.server.Neo4jServer;
+
 import play.Logger;
 
 /**
@@ -26,13 +31,13 @@ public class Neo4JBaseConfiguration extends Neo4jConfiguration
    * Config key which defines where the base packages are located.
    */
   private static String BASE_PACKAGES_CFG = "neo4j.basepackage";
-
-
+  private static String basePackages = "neo4j"; // default
+/**
   public Neo4JBaseConfiguration() {
     super();
 
     // check if baspackes is defined in the configuration if not fall back to neo4j
-    String basePackages;
+    //String basePackages;
     try {
       basePackages  = ConfigFactory.load().getString(BASE_PACKAGES_CFG);
     } catch(ConfigException cfge) {
@@ -40,9 +45,10 @@ public class Neo4JBaseConfiguration extends Neo4jConfiguration
       basePackages = "neo4j";
     }
 
-    setBasePackage(basePackages);
+    //setBasePackage(basePackages);
   }
-
+**/
+/**
   @Bean
   public AuditingEventListener auditingEventListener() throws Exception {
 
@@ -58,6 +64,25 @@ public class Neo4JBaseConfiguration extends Neo4jConfiguration
       }
     });
   }
+**/
+
+    @Bean
+    public Neo4jServer neo4jServer() {
+        return new RemoteServer("http://localhost:7474");
+    }
+
+    @Bean
+    public SessionFactory getSessionFactory() {
+        // with domain entity base package
+        return new SessionFactory(basePackages);
+    }
+
+    // needed for session in view in web-applications
+    @Bean
+    @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+    public Session getSession() throws Exception {
+        return super.getSession();
+    }
 
   /**
    * Run a block of code in a NEO4J transaction.
